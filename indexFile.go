@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	ac "github.com/balzaczyy/golucene/analysis/core"
 	std "github.com/balzaczyy/golucene/analysis/standard"
 	_ "github.com/balzaczyy/golucene/core/codec/lucene49"
 	docu "github.com/balzaczyy/golucene/core/document"
@@ -62,9 +63,18 @@ func main() {
 			continue
 		}
 		nRead++
-		for i, w := range strings.Split(text, "\\s+") {
+		for _, w := range strings.Fields(text) {
+			if w = stripWord(w); len(w) == 0 {
+				continue // no valid alphabet
+			}
+			if _, ok := ac.ENGLISH_STOP_WORDS_SET[w]; ok {
+				continue // ignore stop word
+			}
+			if strings.Contains(w, ",") {
+				panic(w)
+			}
 			nWords++
-			if rand.Intn(nWords+i) == 0 {
+			if rand.Intn(nWords) == 0 {
 				word, wordInLine = w, nRead-1
 			}
 		}
@@ -108,7 +118,8 @@ func main() {
 		log.Panicf("Failed to obtain document '%v': %v", wordInLine, err)
 	}
 	var matched bool
-	for _, w := range strings.Split(doc.Get("text"), "\\s") {
+	for _, w := range strings.Fields(doc.Get("text")) {
+		w = stripWord(w)
 		if word == w {
 			matched = true
 		}
@@ -117,4 +128,22 @@ func main() {
 		log.Panicf("Word '%v' not found in text '%v'.", word, doc.Get("text"))
 	}
 	log.Println("Index done and verified.")
+}
+
+func stripWord(w string) string {
+	w = strings.ToLower(w)
+	start := -1
+	for i, v := range w {
+		isAlpha := (v >= 'a' && v <= 'z')
+		if start >= 0 && !isAlpha {
+			return w[start:i]
+		}
+		if start < 0 && isAlpha {
+			start = i
+		}
+	}
+	if start < 0 {
+		return ""
+	}
+	return w[start:]
 }
