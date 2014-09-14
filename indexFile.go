@@ -11,7 +11,9 @@ import (
 	"github.com/balzaczyy/golucene/core/store"
 	"github.com/balzaczyy/golucene/core/util"
 	"log"
+	"math/rand"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -22,9 +24,9 @@ func main() {
 	}
 
 	start := time.Now()
-	nRead := 0
+	nRead, nWords := 0, 0
 	defer func() {
-		log.Printf("Processed %v lines in %v.", nRead, time.Now().Sub(start))
+		log.Printf("Processed %v lines and %v words in %v.", nRead, nWords, time.Now().Sub(start))
 	}()
 
 	util.SetDefaultInfoStream(util.NewPrintStreamInfoStream(os.Stdout))
@@ -44,7 +46,6 @@ func main() {
 	if err != nil {
 		log.Panicf("Failed to create writer: %v", err)
 	}
-	defer writer.Close() // ensure index is written
 
 	f, err := os.Open(os.Args[1])
 	if err != nil {
@@ -52,6 +53,8 @@ func main() {
 	}
 	defer f.Close()
 
+	var word string
+	var wordInLine int
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {
 		text := scanner.Text()
@@ -59,6 +62,12 @@ func main() {
 			continue
 		}
 		nRead++
+		for i, w := range strings.Split(text, "\\s+") {
+			nWords++
+			if rand.Intn(nWords+i) == 0 {
+				word, wordInLine = w, nRead-1
+			}
+		}
 
 		d := docu.NewDocument()
 		d.Add(docu.NewTextFieldFromString("text", text, docu.STORE_YES))
@@ -66,4 +75,46 @@ func main() {
 			log.Panicf("Failed to process line '%v': %v", text, err)
 		}
 	}
+
+	if err = writer.Close(); err != nil {
+		log.Panicf("Failed to flush index: %v", err)
+	}
+
+	log.Printf("Testing selected keyword: %v", word)
+	reader, err := index.OpenDirectoryReader(directory)
+	if err != nil {
+		log.Panicf("Failed to open writer: %v", err)
+	}
+	defer reader.Close()
+
+	ss := search.NewIndexSearcher(reader)
+	searchStart := time.Now()
+	hits, err := ss.SearchTop(search.NewTermQuery(index.NewTerm("text", word)), 1000)
+	if err != nil {
+		log.Panicf("Failed to search top hits: %v", err)
+	}
+	log.Printf("Found %v hits in %v.", hits.TotalHits, time.Now().Sub(searchStart))
+	var found bool
+	for _, hit := range hits.ScoreDocs {
+		if hit.Doc == wordInLine {
+			found = true
+		}
+	}
+	if !found {
+		log.Panicf("Failed to found expected hit: %v", wordInLine)
+	}
+	doc, err := reader.Document(wordInLine)
+	if err != nil {
+		log.Panicf("Failed to obtain document '%v': %v", wordInLine, err)
+	}
+	var matched bool
+	for _, w := range strings.Split(doc.Get("text"), "\\s") {
+		if word == w {
+			matched = true
+		}
+	}
+	if !matched {
+		log.Panicf("Word '%v' not found in text '%v'.", word, doc.Get("text"))
+	}
+	log.Println("Index done and verified.")
 }
