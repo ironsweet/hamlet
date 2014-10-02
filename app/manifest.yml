@@ -2,6 +2,6 @@
 # hamlet
 applications:
 - name: hamlet
-	memory: 64M
-	host: hamlet
-	buildpack: https://github.com/cloudfoundry/buildpack-go.git
+  memory: 1G
+  host: hamlet
+  buildpack: https://github.com/cloudfoundry/buildpack-go.git
