@@ -11,6 +11,7 @@ import (
 	"github.com/balzaczyy/golucene/core/search"
 	"github.com/balzaczyy/golucene/core/store"
 	"github.com/balzaczyy/golucene/core/util"
+	qp "github.com/balzaczyy/golucene/queryparser/classic"
 	"log"
 	"math/rand"
 	"os"
@@ -54,8 +55,8 @@ func main() {
 	}
 	defer f.Close()
 
-	var word string
-	var wordInLine int
+	var word string = "come merely"
+	var wordInLine int = 423
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {
 		text := scanner.Text()
@@ -90,22 +91,35 @@ func main() {
 		log.Panicf("Failed to flush index: %v", err)
 	}
 
-	log.Printf("Testing selected keyword: %v", word)
+	if strings.Contains(word, " ") {
+		log.Println("Index done and skipped verification.")
+		return
+	}
+
+	log.Printf("Testing selected keyword: %v[%v]", word, wordInLine)
 	reader, err := index.OpenDirectoryReader(directory)
 	if err != nil {
 		log.Panicf("Failed to open writer: %v", err)
 	}
 	defer reader.Close()
 
+	qParser := qp.NewQueryParser(util.VERSION_49, "text", analyzer)
+	query, err := qParser.Parse(word)
+	if err != nil {
+		log.Panicf("Failed to parse query: %v", err)
+	}
+	log.Printf("After parse: %v", query)
+
 	ss := search.NewIndexSearcher(reader)
 	searchStart := time.Now()
-	hits, err := ss.SearchTop(search.NewTermQuery(index.NewTerm("text", word)), 1000)
+	hits, err := ss.SearchTop(query, 1000)
 	if err != nil {
 		log.Panicf("Failed to search top hits: %v", err)
 	}
 	log.Printf("Found %v hits in %v.", hits.TotalHits, time.Now().Sub(searchStart))
 	var found bool
 	for _, hit := range hits.ScoreDocs {
+		// log.Printf("%v", hit)
 		if hit.Doc == wordInLine {
 			found = true
 		}
