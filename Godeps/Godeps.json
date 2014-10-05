@@ -1,0 +1,50 @@
+{
+	"ImportPath": "github.com/balzaczyy/hamlet",
+	"GoVersion": "go1.3.3",
+	"Deps": [
+		{
+			"ImportPath": "github.com/balzaczyy/golucene/analysis/core",
+			"Rev": "62099ec6f2b4bc00a5236cb7e83e25bde314a552"
+		},
+		{
+			"ImportPath": "github.com/balzaczyy/golucene/analysis/standard",
+			"Rev": "62099ec6f2b4bc00a5236cb7e83e25bde314a552"
+		},
+		{
+			"ImportPath": "github.com/balzaczyy/golucene/analysis/util",
+			"Rev": "62099ec6f2b4bc00a5236cb7e83e25bde314a552"
+		},
+		{
+			"ImportPath": "github.com/balzaczyy/golucene/core/analysis",
+			"Rev": "62099ec6f2b4bc00a5236cb7e83e25bde314a552"
+		},
+		{
+			"ImportPath": "github.com/balzaczyy/golucene/core/codec",
+			"Rev": "62099ec6f2b4bc00a5236cb7e83e25bde314a552"
+		},
+		{
+			"ImportPath": "github.com/balzaczyy/golucene/core/document",
+			"Rev": "62099ec6f2b4bc00a5236cb7e83e25bde314a552"
+		},
+		{
+			"ImportPath": "github.com/balzaczyy/golucene/core/index",
+			"Rev": "62099ec6f2b4bc00a5236cb7e83e25bde314a552"
+		},
+		{
+			"ImportPath": "github.com/balzaczyy/golucene/core/search",
+			"Rev": "62099ec6f2b4bc00a5236cb7e83e25bde314a552"
+		},
+		{
+			"ImportPath": "github.com/balzaczyy/golucene/core/store",
+			"Rev": "62099ec6f2b4bc00a5236cb7e83e25bde314a552"
+		},
+		{
+			"ImportPath": "github.com/balzaczyy/golucene/core/util",
+			"Rev": "62099ec6f2b4bc00a5236cb7e83e25bde314a552"
+		},
+		{
+			"ImportPath": "github.com/balzaczyy/golucene/queryparser/classic",
+			"Rev": "62099ec6f2b4bc00a5236cb7e83e25bde314a552"
+		}
+	]
+}
