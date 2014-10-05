@@ -9,13 +9,11 @@ import (
 	"github.com/balzaczyy/golucene/core/store"
 	"github.com/balzaczyy/golucene/core/util"
 	qp "github.com/balzaczyy/golucene/queryparser/classic"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"path"
 	"strings"
-	"time"
 )
 
 func main() {
@@ -42,7 +40,6 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
-	var lastPushed = time.Time{}
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		file := r.URL.Path
 		if path.Ext(file) == "" {
@@ -91,40 +88,5 @@ func main() {
 		w.WriteHeader(200)
 		w.Write(data)
 	})
-	http.HandleFunc("/api/payload", func(w http.ResponseWriter, r *http.Request) {
-		if "POST" == r.Method {
-			defer r.Body.Close()
-			var err error
-			if _, err = ioutil.ReadAll(r.Body); err != nil {
-				log.Printf("Error reading POST body: %v", err)
-				w.WriteHeader(500)
-				return
-			}
-			w.WriteHeader(204)
-			log.Println("Content is updated.")
-			lastPushed = time.Now()
-		}
-	})
 	log.Fatal(http.ListenAndServe(":"+port, nil))
-}
-
-func checkLastModified(w http.ResponseWriter, r *http.Request, modified time.Time) bool {
-	if modified.IsZero() {
-		// no push event received yet
-		w.Header().Set("Last-Modified", time.Now().UTC().Format(http.TimeFormat))
-		w.Header().Set("Cache-Control", "max-age=300")
-		return false
-	}
-
-	if t, err := time.Parse(http.TimeFormat, r.Header.Get("If-Modified-Since")); err == nil && modified.Before(t.Add(1*time.Second)) {
-		h := w.Header()
-		delete(h, "Content-Type")
-		delete(h, "Content-Length")
-		w.WriteHeader(http.StatusNotModified)
-		return true
-	}
-
-	w.Header().Set("Last-Modified", modified.UTC().Format(http.TimeFormat))
-	w.Header().Set("Cache-Control", "max-age=300")
-	return false
 }
