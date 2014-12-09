@@ -2,10 +2,10 @@ package blocktree
 
 import (
 	"fmt"
-	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/index/model"
-	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/store"
-	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util"
-	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util/fst"
+	. "github.com/balzaczyy/golucene/core/index/model"
+	"github.com/balzaczyy/golucene/core/store"
+	"github.com/balzaczyy/golucene/core/util"
+	"github.com/balzaczyy/golucene/core/util/fst"
 	"sort"
 	// "strconv"
 )

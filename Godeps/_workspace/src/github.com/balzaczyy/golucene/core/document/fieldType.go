@@ -3,8 +3,8 @@ package document
 import (
 	"bytes"
 	"fmt"
-	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/index/model"
-	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util"
+	"github.com/balzaczyy/golucene/core/index/model"
+	"github.com/balzaczyy/golucene/core/util"
 )
 
 // document/FieldType.java

@@ -2,7 +2,7 @@ package fst
 
 import (
 	// "fmt"
-	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util/packed"
+	"github.com/balzaczyy/golucene/core/util/packed"
 )
 
 /* Used to dedup states (lookup already-frozen states) */

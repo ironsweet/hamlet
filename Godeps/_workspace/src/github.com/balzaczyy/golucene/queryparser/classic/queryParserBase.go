@@ -3,8 +3,8 @@ package classic
 import (
 	"errors"
 	"fmt"
-	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/analysis"
-	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/search"
+	"github.com/balzaczyy/golucene/core/analysis"
+	"github.com/balzaczyy/golucene/core/search"
 	"strings"
 )
 

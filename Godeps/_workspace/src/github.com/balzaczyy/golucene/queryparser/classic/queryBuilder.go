@@ -1,11 +1,11 @@
 package classic
 
 import (
-	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/analysis"
-	ta "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/analysis/tokenattributes"
-	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/index"
-	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/search"
-	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util"
+	"github.com/balzaczyy/golucene/core/analysis"
+	ta "github.com/balzaczyy/golucene/core/analysis/tokenattributes"
+	"github.com/balzaczyy/golucene/core/index"
+	"github.com/balzaczyy/golucene/core/search"
+	"github.com/balzaczyy/golucene/core/util"
 )
 
 type QueryBuilder struct {

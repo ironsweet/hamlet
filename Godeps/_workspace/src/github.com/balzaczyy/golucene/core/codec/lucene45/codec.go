@@ -2,12 +2,12 @@ package lucene45
 
 import (
 	// "github.com/balzaczyy/golucene/core/store"
-	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/codec/lucene40"
-	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/codec/lucene41"
-	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/codec/lucene42"
-	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/codec/perfield"
-	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/codec/spi"
-	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/index/model"
+	"github.com/balzaczyy/golucene/core/codec/lucene40"
+	"github.com/balzaczyy/golucene/core/codec/lucene41"
+	"github.com/balzaczyy/golucene/core/codec/lucene42"
+	"github.com/balzaczyy/golucene/core/codec/perfield"
+	. "github.com/balzaczyy/golucene/core/codec/spi"
+	. "github.com/balzaczyy/golucene/core/index/model"
 )
 
 // codec/lucene45/Lucene45Codec.java

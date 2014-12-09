@@ -1,7 +1,7 @@
 package packed
 
 import (
-	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util"
+	"github.com/balzaczyy/golucene/core/util"
 )
 
 /* A reader which has all its values equal to 0 (bitsPerValue = 0). */

@@ -1,9 +1,9 @@
 package standard
 
 import (
-	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/analysis/core"
-	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/analysis/util"
-	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/analysis"
+	. "github.com/balzaczyy/golucene/analysis/core"
+	. "github.com/balzaczyy/golucene/analysis/util"
+	. "github.com/balzaczyy/golucene/core/analysis"
 	"io"
 )
 

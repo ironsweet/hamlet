@@ -1,7 +1,7 @@
 package lucene42
 
 import (
-	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/codec/compressing"
+	"github.com/balzaczyy/golucene/core/codec/compressing"
 )
 
 // lucene42/Lucene42TermVectorsFormat.java

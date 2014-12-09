@@ -1,10 +1,10 @@
 package core
 
 import (
-	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/analysis/util"
-	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/analysis"
-	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/analysis/tokenattributes"
-	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util"
+	. "github.com/balzaczyy/golucene/analysis/util"
+	. "github.com/balzaczyy/golucene/core/analysis"
+	. "github.com/balzaczyy/golucene/core/analysis/tokenattributes"
+	"github.com/balzaczyy/golucene/core/util"
 )
 
 // core/LowerCaseFilter.java

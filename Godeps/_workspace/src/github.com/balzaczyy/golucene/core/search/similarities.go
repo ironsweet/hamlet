@@ -1,7 +1,7 @@
 package search
 
 import (
-	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/index"
+	"github.com/balzaczyy/golucene/core/index"
 )
 
 // search/similarities/Similarity.java

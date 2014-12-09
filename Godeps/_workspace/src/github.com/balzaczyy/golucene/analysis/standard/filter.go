@@ -1,8 +1,8 @@
 package standard
 
 import (
-	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/analysis"
-	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util"
+	. "github.com/balzaczyy/golucene/core/analysis"
+	"github.com/balzaczyy/golucene/core/util"
 )
 
 // standard/StandardFilter.java

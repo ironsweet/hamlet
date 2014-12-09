@@ -3,7 +3,7 @@
 package packed
 
 import (
-	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util"
+	"github.com/balzaczyy/golucene/core/util"
 )
 
 // Direct wrapping of 16-bits values to a backing array.

@@ -3,7 +3,7 @@ package store
 import (
 	"errors"
 	"fmt"
-	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util"
+	"github.com/balzaczyy/golucene/core/util"
 	"io"
 	"math"
 	"os"

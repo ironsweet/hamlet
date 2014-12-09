@@ -32,7 +32,7 @@ func main() {
 		log.Panicf("Failed to open writer: %v", err)
 	}
 	defer reader.Close()
-	analyzer := std.NewStandardAnalyzer(util.VERSION_49)
+	analyzer := std.NewStandardAnalyzer()
 	qParser := qp.NewQueryParser(util.VERSION_49, "text", analyzer)
 	ss := search.NewIndexSearcher(reader)
 
