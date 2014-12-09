@@ -1,9 +1,9 @@
 package compressing
 
 import (
-	"github.com/balzaczyy/golucene/core/codec/spi"
-	"github.com/balzaczyy/golucene/core/index/model"
-	"github.com/balzaczyy/golucene/core/store"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/codec/spi"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/index/model"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/store"
 )
 
 // compressing/CompressingTermVectorsFormat.java

@@ -1,7 +1,7 @@
 package tokenattributes
 
 import (
-	"github.com/balzaczyy/golucene/core/util"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util"
 )
 
 /* The term text of a Token. */
@@ -32,13 +32,13 @@ const MIN_BUFFER_SIZE = 10
 type CharTermAttributeImpl struct {
 	termBuffer []rune
 	termLength int
-	bytes      *util.BytesRef
+	bytes      *util.BytesRefBuilder
 }
 
 func newCharTermAttributeImpl() *CharTermAttributeImpl {
 	return &CharTermAttributeImpl{
 		termBuffer: make([]rune, util.Oversize(MIN_BUFFER_SIZE, util.NUM_BYTES_CHAR)),
-		bytes:      util.NewBytesRef(make([]byte, 0, MIN_BUFFER_SIZE)),
+		bytes:      util.NewBytesRefBuilder(),
 	}
 }
 
@@ -65,11 +65,11 @@ func (a *CharTermAttributeImpl) growTermBuffer(newSize int) {
 
 func (a *CharTermAttributeImpl) FillBytesRef() {
 	s := string(a.termBuffer[:a.termLength])
-	a.bytes.Value = []byte(s)
+	a.bytes.Copy([]byte(s))
 }
 
 func (a *CharTermAttributeImpl) BytesRef() *util.BytesRef {
-	return a.bytes
+	return a.bytes.Get()
 }
 
 func (a *CharTermAttributeImpl) Length() int {
@@ -109,7 +109,8 @@ func (a *CharTermAttributeImpl) Clone() util.AttributeImpl {
 	clone.termBuffer = make([]rune, a.termLength)
 	copy(clone.termBuffer, a.termBuffer[:a.termLength])
 	clone.termLength = a.termLength
-	clone.bytes = util.DeepCopyOf(a.bytes)
+	panic("niy")
+	// clone.bytes = util.DeepCopyOf(a.bytes)
 	return clone
 }
 

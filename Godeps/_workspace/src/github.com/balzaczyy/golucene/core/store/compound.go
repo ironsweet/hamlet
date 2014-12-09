@@ -3,8 +3,8 @@ package store
 import (
 	"errors"
 	"fmt"
-	"github.com/balzaczyy/golucene/core/codec"
-	"github.com/balzaczyy/golucene/core/util"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/codec"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util"
 	"reflect"
 	"sync"
 )
@@ -41,6 +41,7 @@ type CompoundFileDirectory struct {
 	openForWrite   bool
 	writer         *CompoundFileWriter
 	handle         IndexInput
+	version        int
 }
 
 func NewCompoundFileDirectory(directory Directory, fileName string, context IOContext, openForWrite bool) (d *CompoundFileDirectory, err error) {
@@ -65,9 +66,23 @@ func NewCompoundFileDirectory(directory Directory, fileName string, context IOCo
 		if err != nil {
 			return nil, err
 		}
-		self.entries, err = readEntries(self.handle, directory, fileName)
+		self.entries, err = self.readEntries(self.handle, directory, fileName)
 		if err != nil {
 			return nil, err
+		}
+		if self.version >= CFD_VERSION_CHECKSUM {
+			if _, err = codec.CheckHeader(self.handle, CFD_DATA_CODEC,
+				int32(self.version), int32(self.version)); err != nil {
+				return nil, err
+			}
+			// NOTE: data file is too costly to verify checksum against all the
+			// bytes on open, but for now we at least verify proper structure
+			// of the checksum footer: which looks for FOOTER_MAGIC +
+			// algorithmID. This is cheap and can detect some forms of
+			// corruption such as file trucation.
+			if _, err = codec.RetrieveChecksum(self.handle); err != nil {
+				return nil, err
+			}
 		}
 		success = true
 		self.BaseDirectory.IsOpen = true
@@ -175,7 +190,7 @@ const (
 	CODEC_MAGIC_BYTE4 = byte(codec.CODEC_MAGIC & 0xFF)
 )
 
-func readEntries(handle IndexInput, dir Directory, name string) (mapping map[string]FileSlice, err error) {
+func (d *CompoundFileDirectory) readEntries(handle IndexInput, dir Directory, name string) (mapping map[string]FileSlice, err error) {
 	var stream IndexInput = nil
 	var entriesStream ChecksumIndexInput = nil
 	// read the first VInt. If it is negative, it's the version number
@@ -215,7 +230,7 @@ func readEntries(handle IndexInput, dir Directory, name string) (mapping map[str
 			return nil, err
 		}
 
-		version, err := codec.CheckHeaderNoMagic(stream, CFD_DATA_CODEC, CFD_VERSION_START, CFD_VERSION_CURRENT)
+		d.version, err = int32ToInt(codec.CheckHeaderNoMagic(stream, CFD_DATA_CODEC, CFD_VERSION_START, CFD_VERSION_CURRENT))
 		if err != nil {
 			return nil, err
 		}
@@ -255,7 +270,7 @@ func readEntries(handle IndexInput, dir Directory, name string) (mapping map[str
 			}
 			mapping[id] = FileSlice{offset, length}
 		}
-		if version >= CFD_VERSION_CHECKSUM {
+		if d.version >= CFD_VERSION_CHECKSUM {
 			_, err = codec.CheckFooter(entriesStream)
 		} else {
 			err = codec.CheckEOF(entriesStream)
@@ -269,4 +284,8 @@ func readEntries(handle IndexInput, dir Directory, name string) (mapping map[str
 	}
 	success = true
 	return mapping, nil
+}
+
+func int32ToInt(n int32, err error) (int, error) {
+	return int(n), err
 }

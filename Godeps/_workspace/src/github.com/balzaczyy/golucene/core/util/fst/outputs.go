@@ -2,7 +2,7 @@ package fst
 
 import (
 	"fmt"
-	"github.com/balzaczyy/golucene/core/util"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util"
 )
 
 // util/fst/Outputs.java
@@ -46,6 +46,7 @@ type Outputs interface {
 	NoOutput() interface{}
 	outputToString(interface{}) string
 	merge(first, second interface{}) interface{}
+	ramBytesUsed(interface{}) int64
 }
 
 type iOutputsReader interface {
@@ -78,8 +79,6 @@ func (out *abstractOutputs) SkipFinalOutput(in util.DataInput) error {
 func (out *abstractOutputs) merge(first, second interface{}) interface{} {
 	panic("not supported yet")
 }
-
-// fst/NoOutputs.java
 
 var NO_OUTPUT = newNoOutputs()
 
@@ -194,6 +193,7 @@ func (out *ByteSequenceOutputs) Subtract(_output, _inc interface{}) interface{} 
 		return _output
 	}
 	output, inc := _output.([]byte), _inc.([]byte)
+	assert(util.StartsWith(output, inc))
 	if len(inc) == len(output) {
 		// entire output removed
 		return NO_OUTPUT
@@ -258,6 +258,12 @@ func (out *ByteSequenceOutputs) outputToString(output interface{}) string {
 
 func (out *ByteSequenceOutputs) String() string {
 	return "ByteSequenceOutputs"
+}
+
+var BASE_NUM_BYTES = util.ShallowSizeOf(NO_OUTPUT)
+
+func (out *ByteSequenceOutputs) ramBytesUsed(output interface{}) int64 {
+	return BASE_NUM_BYTES + util.SizeOf(output.([]byte))
 }
 
 // util/fst/Util.java

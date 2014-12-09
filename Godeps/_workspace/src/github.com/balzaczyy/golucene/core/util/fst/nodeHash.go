@@ -2,7 +2,7 @@ package fst
 
 import (
 	// "fmt"
-	"github.com/balzaczyy/golucene/core/util/packed"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util/packed"
 )
 
 /* Used to dedup states (lookup already-frozen states) */
@@ -17,7 +17,7 @@ type NodeHash struct {
 
 func newNodeHash(fst *FST, in BytesReader) *NodeHash {
 	return &NodeHash{
-		table:      packed.NewPagedGrowableWriter(16, 1<<30, 8, packed.PackedInts.COMPACT),
+		table:      packed.NewPagedGrowableWriter(16, 1<<27, 8, packed.PackedInts.COMPACT),
 		mask:       15,
 		fst:        fst,
 		scratchArc: new(Arc),

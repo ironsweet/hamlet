@@ -1,10 +1,12 @@
 package util
 
 import (
-	. "github.com/balzaczyy/golucene/core/analysis"
-	. "github.com/balzaczyy/golucene/core/analysis/tokenattributes"
-	"github.com/balzaczyy/golucene/core/util"
+	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/analysis"
+	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/analysis/tokenattributes"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util"
 )
+
+// util/FilteringTokenFilter.java
 
 type FilteringTokenFilterSPI interface {
 	// Override this method and return if the current input token

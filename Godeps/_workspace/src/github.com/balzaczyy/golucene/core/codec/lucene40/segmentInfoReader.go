@@ -3,10 +3,10 @@ package lucene40
 import (
 	"errors"
 	"fmt"
-	"github.com/balzaczyy/golucene/core/codec"
-	. "github.com/balzaczyy/golucene/core/index/model"
-	"github.com/balzaczyy/golucene/core/store"
-	"github.com/balzaczyy/golucene/core/util"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/codec"
+	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/index/model"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/store"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util"
 )
 
 // lucene40/Lucene40SegmentInfoReader.java
@@ -36,10 +36,15 @@ func (r *Lucene40SegmentInfoReader) Read(dir store.Directory,
 	if err != nil {
 		return nil, err
 	}
-	version, err := input.ReadString()
+	versionStr, err := input.ReadString()
 	if err != nil {
 		return nil, err
 	}
+	version, err := util.ParseVersion(versionStr)
+	if err != nil {
+		return nil, err
+	}
+
 	docCount, err := input.ReadInt()
 	if err != nil {
 		return nil, err

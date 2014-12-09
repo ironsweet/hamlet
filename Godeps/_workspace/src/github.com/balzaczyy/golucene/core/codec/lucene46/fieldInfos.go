@@ -3,11 +3,11 @@ package lucene46
 import (
 	"errors"
 	"fmt"
-	"github.com/balzaczyy/golucene/core/codec"
-	. "github.com/balzaczyy/golucene/core/codec/spi"
-	. "github.com/balzaczyy/golucene/core/index/model"
-	"github.com/balzaczyy/golucene/core/store"
-	"github.com/balzaczyy/golucene/core/util"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/codec"
+	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/codec/spi"
+	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/index/model"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/store"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util"
 )
 
 // lucene46/Lucene46FieldInfosFormat.java
@@ -97,6 +97,9 @@ var Lucene46FieldInfosReader = func(dir store.Directory,
 		if fieldNumber, err = input.ReadVInt(); err != nil {
 			return
 		}
+		assert2(fieldNumber >= 0,
+			"invalid field number for field: %v, fieldNumber=%v (resource=%v)",
+			name, fieldNumber, input)
 		if bits, err = input.ReadByte(); err != nil {
 			return
 		}

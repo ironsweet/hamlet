@@ -2,9 +2,9 @@ package spi
 
 import (
 	"fmt"
-	. "github.com/balzaczyy/golucene/core/index/model"
-	"github.com/balzaczyy/golucene/core/store"
-	"github.com/balzaczyy/golucene/core/util"
+	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/index/model"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/store"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util"
 )
 
 // codecs/Codec.java
@@ -122,7 +122,13 @@ func RegisterCodec(codecs ...Codec) {
 
 // looks up a codec by name
 func LoadCodec(name string) Codec {
-	return allCodecs[name]
+	c, ok := allCodecs[name]
+	if !ok {
+		fmt.Println("Unknown codec:", name)
+		fmt.Println("Available codecs:", allCodecs)
+		assert(ok)
+	}
+	return c
 }
 
 // returns a list of all available codec names
@@ -136,7 +142,7 @@ func AvailableCodecs() []string {
 
 // Expert: returns the default codec used for newly created IndexWriterConfig(s).
 var DefaultCodec = func() Codec {
-	ans := LoadCodec("Lucene49")
+	ans := LoadCodec("Lucene410")
 	assert(ans != nil)
 	return ans
 }

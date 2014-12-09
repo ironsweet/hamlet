@@ -3,10 +3,10 @@ package search
 import (
 	"bytes"
 	"fmt"
-	"github.com/balzaczyy/golucene/core/index"
-	. "github.com/balzaczyy/golucene/core/index/model"
-	. "github.com/balzaczyy/golucene/core/search/model"
-	"github.com/balzaczyy/golucene/core/util"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/index"
+	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/index/model"
+	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/search/model"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util"
 	"reflect"
 )
 

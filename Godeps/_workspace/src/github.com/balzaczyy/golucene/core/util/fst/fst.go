@@ -3,13 +3,17 @@ package fst
 import (
 	"bytes"
 	"fmt"
-	"github.com/balzaczyy/golucene/core/codec"
-	"github.com/balzaczyy/golucene/core/store"
-	"github.com/balzaczyy/golucene/core/util"
-	"github.com/balzaczyy/golucene/core/util/packed"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/codec"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/store"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util/packed"
 	"math"
 	"reflect"
 )
+
+// util/fst/FST.java
+
+var ARC_SHALLOW_RAM_BYTES_USED = util.ShallowSizeOfInstance(reflect.TypeOf(Arc{}))
 
 type InputType int
 
@@ -159,6 +163,8 @@ type FST struct {
 	// TODO: we could be smarter here, and prune periodically as we go;
 	// high in-count nodes will "usually" become clear early on:
 	inCounts *packed.GrowableWriter
+
+	cachedArcsBytesUsed int
 }
 
 /* Make a new empty FST, for building; Builder invokes this ctor */
@@ -292,6 +298,25 @@ func loadFST3(in util.DataInput, outputs Outputs, maxBlockBits uint32) (fst *FST
 	return fst, err
 }
 
+func (t *FST) ramBytesUsed(arcs []*Arc) int64 {
+	var size int64
+	if arcs != nil {
+		size += util.ShallowSizeOf(arcs)
+		for _, arc := range arcs {
+			if arc != nil {
+				size += ARC_SHALLOW_RAM_BYTES_USED
+				if arc.Output != nil && arc.Output != t.outputs.NoOutput() {
+					size += t.outputs.ramBytesUsed(arc.Output)
+				}
+				if arc.NextFinalOutput != nil && arc.NextFinalOutput != t.outputs.NoOutput() {
+					size += t.outputs.ramBytesUsed(arc.NextFinalOutput)
+				}
+			}
+		}
+	}
+	return size
+}
+
 func (t *FST) finish(newStartNode int64) error {
 	assert2(t.startNode == -1, "already finished")
 	if newStartNode == FST_FINAL_END_NODE && t.emptyOutput != nil {
@@ -314,6 +339,7 @@ func (t *FST) getNodeAddress(node int64) int64 {
 func (t *FST) cacheRootArcs() error {
 	t.cachedRootArcs = make([]*Arc, 0x80)
 	t.readRootArcs(t.cachedRootArcs)
+	t.cachedArcsBytesUsed += int(t.ramBytesUsed(t.cachedRootArcs))
 
 	if err := t.setAssertingRootArcs(t.cachedRootArcs); err != nil {
 		return err
@@ -347,7 +373,11 @@ func (t *FST) readRootArcs(arcs []*Arc) (err error) {
 
 func (t *FST) setAssertingRootArcs(arcs []*Arc) error {
 	t.assertingCachedRootArcs = make([]*Arc, len(arcs))
-	return t.readRootArcs(t.assertingCachedRootArcs)
+	err := t.readRootArcs(t.assertingCachedRootArcs)
+	if err == nil {
+		t.cachedArcsBytesUsed *= 2
+	}
+	return err
 }
 
 func (t *FST) assertRootArcs() {

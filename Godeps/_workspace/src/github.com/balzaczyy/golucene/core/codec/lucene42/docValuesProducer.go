@@ -3,11 +3,11 @@ package lucene42
 import (
 	"errors"
 	"fmt"
-	"github.com/balzaczyy/golucene/core/codec"
-	. "github.com/balzaczyy/golucene/core/codec/spi"
-	. "github.com/balzaczyy/golucene/core/index/model"
-	"github.com/balzaczyy/golucene/core/store"
-	"github.com/balzaczyy/golucene/core/util"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/codec"
+	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/codec/spi"
+	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/index/model"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/store"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util"
 	"reflect"
 	"sync"
 	"sync/atomic"
@@ -119,6 +119,10 @@ func newLucene42DocValuesProducer(state SegmentReadState,
 
 	if version != version2 {
 		return nil, errors.New("Format versions mismatch")
+	}
+
+	if version >= LUCENE42_DV_VERSION_CHECKSUM {
+		panic("niy")
 	}
 
 	success = true

@@ -1,18 +1,16 @@
 package fst
 
 import (
-	"github.com/balzaczyy/golucene/core/util"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util"
 )
 
 // fst/Util.java
 
 /* Just takes unsigned byte values from the BytesRef and converts into an IntsRef. */
-func ToIntsRef(input []byte, scratch *util.IntsRef) *util.IntsRef {
-	scratch.Grow(len(input))
-	for i, v := range input {
-		scratch.Ints[i] = int(v)
+func ToIntsRef(input []byte, scratch *util.IntsRefBuilder) *util.IntsRef {
+	scratch.Clear()
+	for _, v := range input {
+		scratch.Append(int(v))
 	}
-	scratch.Offset = 0
-	scratch.Length = len(input)
-	return scratch
+	return scratch.Get()
 }

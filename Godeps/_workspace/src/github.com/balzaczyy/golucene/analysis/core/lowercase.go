@@ -1,19 +1,19 @@
 package core
 
 import (
-	. "github.com/balzaczyy/golucene/analysis/util"
-	. "github.com/balzaczyy/golucene/core/analysis"
-	. "github.com/balzaczyy/golucene/core/analysis/tokenattributes"
-	"github.com/balzaczyy/golucene/core/util"
+	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/analysis/util"
+	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/analysis"
+	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/analysis/tokenattributes"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util"
 )
+
+// core/LowerCaseFilter.java
 
 /*
 Normalizes token text to lower case.
 
-Version
-
-You mus tspecify the required Version compatibility when creating
-LowerCaseFilter:
+You may specify the Version
+compatibility when creating LowerCaseFilter:
 
 	- As of 3.1, supplementary characters are properly lowercased.
 */

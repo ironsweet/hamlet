@@ -87,3 +87,52 @@ func (a *IntsRef) Grow(newLength int) {
 		a.Ints = GrowIntSlice(a.Ints, newLength)
 	}
 }
+
+// util/IntsRefBuilder.java
+
+type IntsRefBuilder struct {
+	ref *IntsRef
+}
+
+func NewIntsRefBuilder() *IntsRefBuilder {
+	return &IntsRefBuilder{
+		ref: NewEmptyIntsRef(),
+	}
+}
+
+func (a *IntsRefBuilder) Length() int {
+	return a.ref.Length
+}
+
+func (a *IntsRefBuilder) Clear() {
+	a.ref.Length = 0
+}
+
+func (a *IntsRefBuilder) At(offset int) int {
+	return a.ref.Ints[offset]
+}
+
+func (a *IntsRefBuilder) Append(i int) {
+	a.Grow(a.ref.Length + 1)
+	a.ref.Ints[a.ref.Length] = i
+	a.ref.Length++
+}
+
+func (a *IntsRefBuilder) Grow(newLength int) {
+	a.ref.Ints = GrowIntSlice(a.ref.Ints, newLength)
+}
+
+func (a *IntsRefBuilder) CopyIntSlice(other []int) {
+	a.Grow(len(other))
+	copy(a.ref.Ints, other)
+	a.ref.Length = len(other)
+}
+
+func (a *IntsRefBuilder) CopyInts(ints *IntsRef) {
+	a.CopyIntSlice(ints.Ints[ints.Offset : ints.Offset+ints.Length])
+}
+
+func (a *IntsRefBuilder) Get() *IntsRef {
+	assert2(a.ref.Offset == 0, "Modifying the offset of the returned ref is illegal")
+	return a.ref
+}

@@ -1,10 +1,10 @@
 package lucene40
 
 import (
-	"github.com/balzaczyy/golucene/core/codec"
-	. "github.com/balzaczyy/golucene/core/index/model"
-	"github.com/balzaczyy/golucene/core/store"
-	"github.com/balzaczyy/golucene/core/util"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/codec"
+	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/index/model"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/store"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util"
 )
 
 const (
@@ -34,7 +34,7 @@ func (w *Lucene40SegmentInfoWriter) Write(dir store.Directory,
 	defer func() {
 		if !success {
 			util.CloseWhileSuppressingError(output)
-			err = mergeError(err, si.Dir.DeleteFile(filename))
+			si.Dir.DeleteFile(filename) // ignore error
 		} else {
 			err = mergeError(err, output.Close())
 		}
@@ -45,7 +45,7 @@ func (w *Lucene40SegmentInfoWriter) Write(dir store.Directory,
 		return err
 	}
 	// Write the Lucene version that created this segment, since 3.1
-	err = store.Stream(output).WriteString(si.Version()).
+	err = store.Stream(output).WriteString(si.Version().String()).
 		WriteInt(int32(si.DocCount())).
 		WriteByte(func() byte {
 		if si.IsCompoundFile() {

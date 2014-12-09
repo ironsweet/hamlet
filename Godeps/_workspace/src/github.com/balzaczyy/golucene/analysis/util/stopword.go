@@ -1,21 +1,20 @@
 package util
 
 import (
-	. "github.com/balzaczyy/golucene/core/analysis"
-	"github.com/balzaczyy/golucene/core/util"
+	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/analysis"
 )
+
+// util/StopwordAnalyzerBase.java
 
 /* Base class for Analyzers that need to make use of stopword sets. */
 type StopwordAnalyzerBase struct {
 	*AnalyzerImpl
-	stopwords    map[string]bool
-	matchVersion util.Version
+	stopwords map[string]bool
 }
 
-func NewStopwordAnalyzerBaseWithStopWords(version util.Version, stopwords map[string]bool) *StopwordAnalyzerBase {
+func NewStopwordAnalyzerBaseWithStopWords(stopwords map[string]bool) *StopwordAnalyzerBase {
 	ans := new(StopwordAnalyzerBase)
 	ans.AnalyzerImpl = NewAnalyzer()
-	ans.matchVersion = version
 	ans.stopwords = make(map[string]bool)
 	if stopwords != nil {
 		for k, v := range stopwords {

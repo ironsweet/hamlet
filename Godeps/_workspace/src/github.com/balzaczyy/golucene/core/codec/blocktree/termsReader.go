@@ -3,11 +3,11 @@ package blocktree
 import (
 	"errors"
 	"fmt"
-	"github.com/balzaczyy/golucene/core/codec"
-	. "github.com/balzaczyy/golucene/core/codec/spi"
-	. "github.com/balzaczyy/golucene/core/index/model"
-	"github.com/balzaczyy/golucene/core/store"
-	"github.com/balzaczyy/golucene/core/util"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/codec"
+	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/codec/spi"
+	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/index/model"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/store"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util"
 )
 
 // BlockTreeTermsReader.java
@@ -125,6 +125,17 @@ func NewBlockTreeTermsReader(dir store.Directory,
 	// Have PostingsReader init itself
 	postingsReader.Init(fp.in)
 
+	if fp.version >= TERMS_VERSION_CHECKSUM {
+		// NOTE: data file is too costly to verify checksum against all the
+		// bytes on open, but for now we at least verify proper structure
+		// of the checksum footer: which looks for FOOTER_MAGIC +
+		// algorithmID. This is cheap and can detect some forms of
+		// corruption such as file trucation.
+		if _, err = codec.RetrieveChecksum(fp.in); err != nil {
+			return nil, err
+		}
+	}
+
 	// Read per-field details
 	fp.seekDir(fp.in, fp.dirOffset)
 	if indexDivisor != -1 {
@@ -152,13 +163,17 @@ func NewBlockTreeTermsReader(dir store.Directory,
 		if err != nil {
 			return nil, err
 		}
-		assert(numTerms >= 0)
+		assert2(numTerms > 0,
+			"Illegal numTerms for field number: %v (resource=%v)", field, fp.in)
 		// log.Printf("Terms number: %v", numTerms)
 
 		numBytes, err := fp.in.ReadVInt()
 		if err != nil {
 			return nil, err
 		}
+		assert2(numBytes >= 0,
+			"invalid rootCode for field number: %v, numBytes=%v (resource=%v)",
+			field, numBytes, fp.in)
 		// log.Printf("Bytes number: %v", numBytes)
 
 		rootCode := make([]byte, numBytes)
@@ -167,7 +182,7 @@ func NewBlockTreeTermsReader(dir store.Directory,
 			return nil, err
 		}
 		fieldInfo := fieldInfos.FieldInfoByNumber(int(field))
-		// assert fieldInfo != nil
+		assert2(fieldInfo != nil, "invalid field numebr: %v (resource=%v)", field, fp.in)
 		var sumTotalTermFreq int64
 		if fieldInfo.IndexOptions() == INDEX_OPT_DOCS_ONLY {
 			sumTotalTermFreq = -1
@@ -192,6 +207,9 @@ func NewBlockTreeTermsReader(dir store.Directory,
 				return nil, err
 			}
 		}
+		assert2(longsSize >= 0,
+			"invalid longsSize for field: %v, longsSize=%v (resource=%v)",
+			fieldInfo.Name, longsSize, fp.in)
 		var minTerm, maxTerm []byte
 		if fp.version >= TERMS_VERSION_MIN_MAX_TERMS {
 			if minTerm, err = readBytesRef(fp.in); err != nil {

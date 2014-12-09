@@ -2,9 +2,9 @@ package automaton
 
 import (
 	"container/list"
-	"github.com/balzaczyy/golucene/core/util"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util"
 	. "github.com/balzaczyy/golucene/test_framework/util"
-	"math/big"
+	// "fmt"
 	"math/rand"
 	"testing"
 	"unicode"
@@ -12,10 +12,9 @@ import (
 
 func TestRegExpToAutomaton(t *testing.T) {
 	a := NewRegExp("[^ \t\r\n]+").ToAutomaton()
-	// fmt.Println(a)
 	assert(a.deterministic)
-	assert(1 == a.initial.number)
-	assert(2 == len(a.numberedStates))
+	assert(-1 == a.curState)
+	assert(2 == a.numStates())
 }
 
 func TestMinusSimple(t *testing.T) {
@@ -26,6 +25,15 @@ func TestMinusSimple(t *testing.T) {
 func TestComplementSimple(t *testing.T) {
 	a := makeChar('a')
 	assert(sameLanguage(a, complement(complement(a))))
+}
+
+func TestDeterminizeSimple(t *testing.T) {
+	a1 := complement(NewRegExpWithFlag("-", NONE).ToAutomaton())
+	a2 := NewRegExpWithFlag("ݖ|+", NONE).ToAutomaton()
+	a := concatenate(a1, a2)
+	a = removeDeadStates(a)
+	a = determinize(a)
+	assert(a.numStates() == 4)
 }
 
 // func TestStringUnion(t testing.T) {
@@ -65,15 +73,11 @@ func randomRegexp(r *rand.Rand) string {
 					ok = false
 				}
 			}()
-			l := make([]rune, 0, len(regexp))
-			for _, ch := range regexp {
-				l = append(l, ch)
-			}
 			// log.Println("Trying", regexp)
 			NewRegExpWithFlag(regexp, NONE)
 			return
 		}(regexp); ok {
-			// log.Println("Valid regexp found:", regexp)
+			// fmt.Println("Valid regexp found:", regexp)
 			return regexp
 		}
 	}
@@ -149,16 +153,16 @@ func randomAutomaton(r *rand.Rand) *Automaton {
 	// combine them in random ways
 	switch r.Intn(4) {
 	case 0:
-		// log.Println("DEBUG way 0")
+		// fmt.Println("DEBUG way 0")
 		return concatenate(a1, a2)
 	case 1:
-		// log.Println("DEBUG way 1")
+		// fmt.Println("DEBUG way 1")
 		return union(a1, a2)
 	case 2:
-		// log.Println("DEBUG way 2")
+		// fmt.Println("DEBUG way 2")
 		return intersection(a1, a2)
 	default:
-		// log.Println("DEBUG way 3")
+		// fmt.Println("DEBUG way 3")
 		return minus(a1, a2)
 	}
 }
@@ -200,58 +204,67 @@ func randomAutomaton(r *rand.Rand) *Automaton {
 /**
  * Simple, original brics implementation of Brzozowski minimize()
  */
-func minimizeSimple(a *Automaton) {
-	if a.isSingleton() {
-		return
-	}
-	determinizeSimple(a, reverse(a))
-	determinizeSimple(a, reverse(a))
+func minimizeSimple(a *Automaton) *Automaton {
+	var initialSet map[int]bool
+	a, initialSet = reverse(a)
+	a = determinizeSimple(a, initialSet)
+	a, initialSet = reverse(a)
+	a = determinizeSimple(a, initialSet)
+	return a
 }
 
-// Simple original brics implementation of determinize()
-// Determinizes the given automaton using the given set of initial
-// states
-func determinizeSimple(a *Automaton, initialset map[int]*State) {
+/*
+Simple original brics implementation of determinize()
+Determinizes the given automaton using the given set of initial states.
+*/
+func determinizeSimple(a *Automaton, initialset map[int]bool) *Automaton {
+	if a.numStates() == 0 {
+		return a
+	}
 	points := a.startPoints()
 	// subset construction
 	sets := make(map[string]bool)
-	hash := func(sets map[int]*State) string {
-		n := big.NewInt(0)
+	hash := func(sets map[int]bool) string {
+		n := util.NewOpenBitSet()
 		for k, _ := range sets {
-			n.SetBit(n, k, 1)
+			n.Set(int64(k))
 		}
 		return n.String()
 	}
 	worklist := list.New()
-	newstate := make(map[string]*State)
+	newstate := make(map[string]int)
 	sets[hash(initialset)] = true
 	worklist.PushBack(initialset)
-	a.initial = newState()
-	newstate[hash(initialset)] = a.initial
+	b := newAutomatonBuilder()
+	b.createState()
+	newstate[hash(initialset)] = 0
+	t := newTransition()
 	for worklist.Len() > 0 {
-		s := worklist.Front().Value.(map[int]*State)
-		worklist.Remove(worklist.Front())
+		s := worklist.Remove(worklist.Front()).(map[int]bool)
 		r := newstate[hash(s)]
-		for _, q := range s {
-			if q.accept {
-				r.accept = true
+		for q, _ := range s {
+			if a.IsAccept(q) {
+				b.setAccept(r, true)
 				break
 			}
 		}
 		for n, point := range points {
-			p := make(map[int]*State)
-			for _, q := range s {
-				for _, t := range q.transitionsArray {
+			p := make(map[int]bool)
+			for q, _ := range s {
+				count := a.initTransition(q, t)
+				for i := 0; i < count; i++ {
+					a.nextTransition(t)
 					if t.min <= point && point <= t.max {
-						p[t.to.id] = t.to
+						p[t.dest] = true
 					}
 				}
 			}
+
 			hashKey := hash(p)
 			if _, ok := sets[hashKey]; !ok {
 				sets[hashKey] = true
 				worklist.PushBack(p)
-				newstate[hashKey] = newState()
+				newstate[hashKey] = b.createState()
 			}
 			q := newstate[hashKey]
 			min := point
@@ -261,10 +274,9 @@ func determinizeSimple(a *Automaton, initialset map[int]*State) {
 			} else {
 				max = unicode.MaxRune
 			}
-			r.addTransition(newTransitionRange(min, max, q))
+			b.addTransitionRange(r, q, min, max)
 		}
 	}
-	a.deterministic = true
-	a.clearNumberedStates()
-	a.removeDeadTransitions()
+
+	return removeDeadStates(b.finish())
 }

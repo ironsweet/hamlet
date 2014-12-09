@@ -3,13 +3,13 @@ package compressing
 import (
 	"errors"
 	"fmt"
-	"github.com/balzaczyy/golucene/core/codec"
-	"github.com/balzaczyy/golucene/core/codec/lucene40"
-	. "github.com/balzaczyy/golucene/core/codec/spi"
-	"github.com/balzaczyy/golucene/core/index/model"
-	"github.com/balzaczyy/golucene/core/store"
-	"github.com/balzaczyy/golucene/core/util"
-	"github.com/balzaczyy/golucene/core/util/packed"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/codec"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/codec/lucene40"
+	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/codec/spi"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/index/model"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/store"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util/packed"
 )
 
 // codec/compressing/CompressingStoredFieldsReader.java
@@ -144,6 +144,17 @@ func newCompressingStoredFieldsReader(d store.Directory,
 	}
 	r.decompressor = compressionMode.NewDecompressor()
 	r.bytes = make([]byte, 0)
+
+	if r.version >= VERSION_CHECKSUM {
+		// NOTE: data file is too costly to verify checksum against all the
+		// bytes on open, but fo rnow we at least verify proper structure
+		// of the checksum footer: which looks for FOOTER_MATIC +
+		// algorithmID. This is cheap and can detect some forms of
+		// corruption such as file trucation.
+		if _, err = codec.RetrieveChecksum(r.fieldsStream); err != nil {
+			return nil, err
+		}
+	}
 
 	success = true
 	return r, nil

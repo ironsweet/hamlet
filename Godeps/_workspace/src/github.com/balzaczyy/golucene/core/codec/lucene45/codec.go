@@ -2,12 +2,12 @@ package lucene45
 
 import (
 	// "github.com/balzaczyy/golucene/core/store"
-	"github.com/balzaczyy/golucene/core/codec/lucene40"
-	"github.com/balzaczyy/golucene/core/codec/lucene41"
-	"github.com/balzaczyy/golucene/core/codec/lucene42"
-	"github.com/balzaczyy/golucene/core/codec/perfield"
-	. "github.com/balzaczyy/golucene/core/codec/spi"
-	. "github.com/balzaczyy/golucene/core/index/model"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/codec/lucene40"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/codec/lucene41"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/codec/lucene42"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/codec/perfield"
+	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/codec/spi"
+	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/index/model"
 )
 
 // codec/lucene45/Lucene45Codec.java
@@ -25,7 +25,6 @@ extend FilterCodec.
 */
 type Lucene45Codec struct {
 	*CodecImpl
-	PostingsFormatForField func(string) PostingsFormat
 }
 
 func init() {
@@ -47,7 +46,9 @@ var Lucene45CodecImpl = func() *Lucene45Codec {
 		}),
 		lucene42.NewLucene42NormsFormat(),
 	)
-	return &Lucene45Codec{codec, f}
+	return &Lucene45Codec{
+		CodecImpl: codec,
+	}
 }()
 
 // codec/lucene45/Lucene45DocValuesFormat.java

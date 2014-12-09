@@ -3,12 +3,12 @@ package lucene41
 import (
 	"errors"
 	"fmt"
-	"github.com/balzaczyy/golucene/core/codec"
-	. "github.com/balzaczyy/golucene/core/codec/spi"
-	. "github.com/balzaczyy/golucene/core/index/model"
-	"github.com/balzaczyy/golucene/core/store"
-	"github.com/balzaczyy/golucene/core/util"
-	"github.com/balzaczyy/golucene/core/util/packed"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/codec"
+	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/codec/spi"
+	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/index/model"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/store"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util/packed"
 	"reflect"
 )
 
@@ -18,8 +18,19 @@ import (
 Expert: the maximum number of skip levels. Smaller values result in
 slightly smaller indexes, but slower skipping in big posting lists.
 */
-
 const maxSkipLevels = 10
+
+const (
+	LUCENE41_TERMS_CODEC = "Lucene41PostingsWriterTerms"
+	LUCENE41_DOC_CODEC   = "Lucene41PostingsWriterDoc"
+	LUCENE41_POS_CODEC   = "Lucene41PostingsWriterPos"
+	LUCENE41_PAY_CODEC   = "Lucene41PostingsWriterPay"
+
+	LUCENE41_VERSION_START      = 0
+	LUCENE41_VERSION_META_ARRAY = 1
+	LUCENE41_VERSION_CHECKSUM   = 2
+	LUCENE41_VERSION_CURRENT    = LUCENE41_VERSION_CHECKSUM
+)
 
 /*
 Concrete class that writes docId (maybe frq,pos,offset,payloads) list

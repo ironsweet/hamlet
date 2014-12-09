@@ -15,7 +15,9 @@ type Sorter struct {
 }
 
 func newSorter(arr sort.Interface) *Sorter {
-	return &Sorter{arr}
+	return &Sorter{
+		Interface: arr,
+	}
 }
 
 func (sorter *Sorter) checkRange(from, to int) {
@@ -25,6 +27,92 @@ func (sorter *Sorter) checkRange(from, to int) {
 func assert2(ok bool, msg string, args ...interface{}) {
 	if !ok {
 		panic(fmt.Sprintf(msg, args...))
+	}
+}
+
+func (s *Sorter) mergeInPlace(from, mid, to int) {
+	if from == mid || mid == to || !s.Less(mid, mid-1) {
+		return
+	}
+	if to-from == 2 {
+		s.Swap(mid-1, mid)
+		return
+	}
+	for !s.Less(mid, from) {
+		from++
+	}
+	for !s.Less(to-1, mid-1) {
+		to--
+	}
+	var first_cut, second_cut int
+	var len11, len22 int
+	if mid-from > to-mid {
+		len11 = int(uint(mid-from) >> 1)
+		first_cut = from + len11
+		second_cut = s.lower(mid, to, first_cut)
+		len22 = second_cut - mid
+	} else {
+		len22 = int(uint(to-mid) >> 1)
+		second_cut = mid + len22
+		first_cut = s.upper(from, mid, second_cut)
+		// len11 = first_cut - from
+	}
+	s.rotate(first_cut, mid, second_cut)
+	new_mid := first_cut + len22
+	s.mergeInPlace(from, first_cut, new_mid)
+	s.mergeInPlace(new_mid, second_cut, to)
+}
+
+func (s *Sorter) lower(from, to, val int) int {
+	size := to - from
+	for size > 0 {
+		half := int(uint(size) >> 1)
+		mid := from + half
+		if s.Less(mid, val) {
+			from = mid + 1
+			size = size - half - 1
+		} else {
+			size = half
+		}
+	}
+	return from
+}
+
+func (s *Sorter) upper(from, to, val int) int {
+	size := to - from
+	for size > 0 {
+		half := int(uint(size) >> 1)
+		mid := from + half
+		if s.Less(val, mid) {
+			size = half
+		} else {
+			from = mid + 1
+			size = size - half - 1
+		}
+	}
+	return from
+}
+
+func (s *Sorter) rotate(lo, mid, hi int) {
+	assert(lo <= mid && mid <= hi)
+	if lo == mid || mid == hi {
+		return
+	}
+	s.doRotate(lo, mid, hi)
+}
+
+func (s *Sorter) doRotate(lo, mid, hi int) {
+	if mid-lo == hi-mid {
+		// happens rarely but saves n/2 swaps
+		for mid < hi {
+			s.Swap(lo, mid)
+			lo++
+			mid++
+		}
+	} else {
+		s.reverse(lo, mid)
+		s.reverse(mid, hi)
+		s.reverse(lo, hi)
 	}
 }
 
@@ -284,7 +372,7 @@ type IntroSorterSPI interface {
 /*
 Sorter implementation based on a variant of the quicksort algorithm
 called introsort: when the recursion level exceeds the log of the
-length of the array to sort, it falls back to heapsort. This revents
+length of the array to sort, it falls back to heapsort. This prevents
 quicksort from running into its worst-case quadratic runtime. Small
 arrays are sorted with insertion sort.
 */
@@ -372,4 +460,37 @@ func (s *IntroSorter) quicksort(from, to, maxDepth int) {
 	// for i := from; i < to-1; i++ {
 	// 	assert(!s.Less(i+1, i))
 	// }
+}
+
+// util/InPlaceMergeSorter.java
+
+/*
+Sorter implementation absed on the merge-sort algorithm that merges
+in place (no extra memory will be allocated). Small arrays are sorter
+with insertion sort.
+*/
+type InPlaceMergeSorter struct {
+	*Sorter
+}
+
+func NewInPlaceMergeSorter(impl sort.Interface) *InPlaceMergeSorter {
+	return &InPlaceMergeSorter{
+		Sorter: newSorter(impl),
+	}
+}
+
+func (s *InPlaceMergeSorter) Sort(from, to int) {
+	s.checkRange(from, to)
+	s.mergeSort(from, to)
+}
+
+func (s *InPlaceMergeSorter) mergeSort(from, to int) {
+	if to-from < SORTER_THRESHOLD {
+		s.insertionSort(from, to)
+	} else {
+		mid := int((uint(from) + uint(to)) >> 1)
+		s.mergeSort(from, mid)
+		s.mergeSort(mid, to)
+		s.mergeInPlace(from, mid, to)
+	}
 }

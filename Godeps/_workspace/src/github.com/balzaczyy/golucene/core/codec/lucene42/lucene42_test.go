@@ -1,7 +1,7 @@
 package lucene42
 
 import (
-	"github.com/balzaczyy/golucene/core/store"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/store"
 	"testing"
 )
 

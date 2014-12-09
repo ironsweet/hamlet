@@ -1,9 +1,11 @@
 package standard
 
 import (
-	. "github.com/balzaczyy/golucene/core/analysis"
-	"github.com/balzaczyy/golucene/core/util"
+	. "github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/analysis"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util"
 )
+
+// standard/StandardFilter.java
 
 /* Normalizes tokens extracted with StandardTokenizer */
 type StandardFilter struct {

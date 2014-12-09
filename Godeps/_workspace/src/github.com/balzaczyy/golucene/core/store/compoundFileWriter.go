@@ -4,8 +4,8 @@ import (
 	"container/list"
 	"errors"
 	"fmt"
-	"github.com/balzaczyy/golucene/core/codec"
-	"github.com/balzaczyy/golucene/core/util"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/codec"
+	"github.com/balzaczyy/hamlet/Godeps/_workspace/src/github.com/balzaczyy/golucene/core/util"
 	"sort"
 	"sync"
 )
@@ -183,7 +183,7 @@ func (w *CompoundFileWriter) copyFileEntry(dataOut IndexOutput, fileEntry *FileE
 			err = util.Close(is)
 			// copy successful - delete file
 			if err == nil {
-				err = fileEntry.dir.DeleteFile(fileEntry.file)
+				fileEntry.dir.DeleteFile(fileEntry.file) // ignore error
 			}
 		} else {
 			util.CloseWhileSuppressingError(is)
