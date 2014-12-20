@@ -4,47 +4,47 @@
 	"Deps": [
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/analysis/core",
-			"Rev": "d1d1524c481c8d557777e68423a128ef4e423959"
+			"Rev": "32109c16bff7a7a4d136e104d79fd571d9241bce"
 		},
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/analysis/standard",
-			"Rev": "d1d1524c481c8d557777e68423a128ef4e423959"
+			"Rev": "32109c16bff7a7a4d136e104d79fd571d9241bce"
 		},
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/analysis/util",
-			"Rev": "d1d1524c481c8d557777e68423a128ef4e423959"
+			"Rev": "32109c16bff7a7a4d136e104d79fd571d9241bce"
 		},
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/core/analysis",
-			"Rev": "d1d1524c481c8d557777e68423a128ef4e423959"
+			"Rev": "32109c16bff7a7a4d136e104d79fd571d9241bce"
 		},
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/core/codec",
-			"Rev": "d1d1524c481c8d557777e68423a128ef4e423959"
+			"Rev": "32109c16bff7a7a4d136e104d79fd571d9241bce"
 		},
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/core/document",
-			"Rev": "d1d1524c481c8d557777e68423a128ef4e423959"
+			"Rev": "32109c16bff7a7a4d136e104d79fd571d9241bce"
 		},
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/core/index",
-			"Rev": "d1d1524c481c8d557777e68423a128ef4e423959"
+			"Rev": "32109c16bff7a7a4d136e104d79fd571d9241bce"
 		},
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/core/search",
-			"Rev": "d1d1524c481c8d557777e68423a128ef4e423959"
+			"Rev": "32109c16bff7a7a4d136e104d79fd571d9241bce"
 		},
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/core/store",
-			"Rev": "d1d1524c481c8d557777e68423a128ef4e423959"
+			"Rev": "32109c16bff7a7a4d136e104d79fd571d9241bce"
 		},
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/core/util",
-			"Rev": "d1d1524c481c8d557777e68423a128ef4e423959"
+			"Rev": "32109c16bff7a7a4d136e104d79fd571d9241bce"
 		},
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/queryparser/classic",
-			"Rev": "d1d1524c481c8d557777e68423a128ef4e423959"
+			"Rev": "32109c16bff7a7a4d136e104d79fd571d9241bce"
 		}
 	]
 }
