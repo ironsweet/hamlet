@@ -4,47 +4,51 @@
 	"Deps": [
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/analysis/core",
-			"Rev": "32109c16bff7a7a4d136e104d79fd571d9241bce"
+			"Rev": "88e69d20ff0070809be79699b5ab04e1ee51f479"
 		},
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/analysis/standard",
-			"Rev": "32109c16bff7a7a4d136e104d79fd571d9241bce"
+			"Rev": "88e69d20ff0070809be79699b5ab04e1ee51f479"
 		},
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/analysis/util",
-			"Rev": "32109c16bff7a7a4d136e104d79fd571d9241bce"
+			"Rev": "88e69d20ff0070809be79699b5ab04e1ee51f479"
 		},
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/core/analysis",
-			"Rev": "32109c16bff7a7a4d136e104d79fd571d9241bce"
+			"Rev": "88e69d20ff0070809be79699b5ab04e1ee51f479"
 		},
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/core/codec",
-			"Rev": "32109c16bff7a7a4d136e104d79fd571d9241bce"
+			"Rev": "88e69d20ff0070809be79699b5ab04e1ee51f479"
 		},
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/core/document",
-			"Rev": "32109c16bff7a7a4d136e104d79fd571d9241bce"
+			"Rev": "88e69d20ff0070809be79699b5ab04e1ee51f479"
 		},
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/core/index",
-			"Rev": "32109c16bff7a7a4d136e104d79fd571d9241bce"
+			"Rev": "88e69d20ff0070809be79699b5ab04e1ee51f479"
 		},
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/core/search",
-			"Rev": "32109c16bff7a7a4d136e104d79fd571d9241bce"
+			"Rev": "88e69d20ff0070809be79699b5ab04e1ee51f479"
 		},
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/core/store",
-			"Rev": "32109c16bff7a7a4d136e104d79fd571d9241bce"
+			"Rev": "88e69d20ff0070809be79699b5ab04e1ee51f479"
 		},
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/core/util",
-			"Rev": "32109c16bff7a7a4d136e104d79fd571d9241bce"
+			"Rev": "88e69d20ff0070809be79699b5ab04e1ee51f479"
 		},
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/queryparser/classic",
-			"Rev": "32109c16bff7a7a4d136e104d79fd571d9241bce"
+			"Rev": "88e69d20ff0070809be79699b5ab04e1ee51f479"
+		},
+		{
+			"ImportPath": "github.com/op/go-logging",
+			"Rev": "3aac294f0523fecd878d6faa003ba48b52769ae5"
 		}
 	]
 }
