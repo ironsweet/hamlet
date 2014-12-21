@@ -9,12 +9,22 @@ import (
 	"github.com/balzaczyy/golucene/core/store"
 	"github.com/balzaczyy/golucene/core/util"
 	qp "github.com/balzaczyy/golucene/queryparser/classic"
-	"log"
+	"github.com/op/go-logging"
 	"net/http"
 	"os"
 	"path"
 	"strings"
 )
+
+var log = logging.MustGetLogger("hamlet")
+
+func init() {
+	format := logging.MustStringFormatter(
+		"%{color}%{time:15:04:05.000000} %{shortfunc} ▶ %{level:.4s} %{id:03x}%{color:reset} %{message}")
+	backend := logging.NewLogBackend(os.Stdout, "", 0)
+	logging.SetBackend(logging.NewBackendFormatter(backend, format))
+	log.Info("Logger is configured.")
+}
 
 func main() {
 
@@ -24,12 +34,14 @@ func main() {
 	}
 	directory, err := store.OpenFSDirectory("index")
 	if err != nil {
-		log.Panicf("Failed to open directory: %v", err)
+		log.Critical("Failed to open directory: %v", err)
+		return
 	}
 	defer directory.Close()
 	reader, err := index.OpenDirectoryReader(directory)
 	if err != nil {
-		log.Panicf("Failed to open writer: %v", err)
+		log.Critical("Failed to open writer: %v", err)
+		return
 	}
 	defer reader.Close()
 	analyzer := std.NewStandardAnalyzer()
@@ -48,22 +60,22 @@ func main() {
 		if strings.HasPrefix(file, "/") {
 			file = file[1:]
 		}
-		log.Printf("Serving %v", file)
+		log.Debug("Serving %v", file)
 		http.ServeFile(w, r, file)
 	})
 	http.HandleFunc("/api/search", func(w http.ResponseWriter, r *http.Request) {
 		queryStr := r.URL.Query().Get("q")
-		log.Printf("Query: %v", queryStr)
+		log.Debug("Query: %v", queryStr)
 		query, err := qParser.Parse(queryStr)
 		if err != nil {
-			log.Printf("Parse failed: %v", err)
+			log.Error("Parse failed: %v", err)
 			w.WriteHeader(500)
 			return
 		}
 
 		hits, err := ss.SearchTop(query, 100)
 		if err != nil {
-			log.Printf("Search failed: %v", err)
+			log.Error("Search failed: %v", err)
 			w.WriteHeader(500)
 			return
 		}
@@ -72,7 +84,7 @@ func main() {
 		for _, hit := range hits.ScoreDocs {
 			doc, err := reader.Document(hit.Doc)
 			if err != nil {
-				log.Printf("Fetch doc %v failed: %v", hit.Doc, err)
+				log.Warning("Fetch doc %v failed: %v", hit.Doc, err)
 				continue
 			}
 			lines = append(lines, doc.Get("text"))
@@ -80,7 +92,7 @@ func main() {
 
 		data, err := json.Marshal(lines)
 		if err != nil {
-			log.Printf("IO error: %v", err)
+			log.Error("IO error: %v", err)
 			w.WriteHeader(500)
 			return
 		}
@@ -88,5 +100,5 @@ func main() {
 		w.WriteHeader(200)
 		w.Write(data)
 	})
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	log.Critical("%v", http.ListenAndServe(":"+port, nil))
 }
