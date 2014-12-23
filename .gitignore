@@ -24,5 +24,3 @@ _testmain.go
 *.prof
 hamlet.sublime-project
 hamlet.sublime-workspace
-app/index
-index
