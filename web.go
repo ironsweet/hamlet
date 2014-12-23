@@ -50,7 +50,7 @@ func main() {
 
 	port := os.Getenv("VCAP_APP_PORT")
 	if port == "" {
-		port = "8080"
+		port = "8081"
 	}
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		file := r.URL.Path
