@@ -1,50 +1,54 @@
 {
 	"ImportPath": "github.com/balzaczyy/hamlet",
-	"GoVersion": "go1.3.3",
+	"GoVersion": "go1.4",
 	"Deps": [
 		{
+			"ImportPath": "github.com/balzaczyy/go-logging",
+			"Rev": "3aac294f0523fecd878d6faa003ba48b52769ae5"
+		},
+		{
 			"ImportPath": "github.com/balzaczyy/golucene/analysis/core",
-			"Rev": "88e69d20ff0070809be79699b5ab04e1ee51f479"
+			"Rev": "b1d6d1fa894be9fd2b2d73521a21a487e84edd6e"
 		},
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/analysis/standard",
-			"Rev": "88e69d20ff0070809be79699b5ab04e1ee51f479"
+			"Rev": "b1d6d1fa894be9fd2b2d73521a21a487e84edd6e"
 		},
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/analysis/util",
-			"Rev": "88e69d20ff0070809be79699b5ab04e1ee51f479"
+			"Rev": "b1d6d1fa894be9fd2b2d73521a21a487e84edd6e"
 		},
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/core/analysis",
-			"Rev": "88e69d20ff0070809be79699b5ab04e1ee51f479"
+			"Rev": "b1d6d1fa894be9fd2b2d73521a21a487e84edd6e"
 		},
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/core/codec",
-			"Rev": "88e69d20ff0070809be79699b5ab04e1ee51f479"
+			"Rev": "b1d6d1fa894be9fd2b2d73521a21a487e84edd6e"
 		},
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/core/document",
-			"Rev": "88e69d20ff0070809be79699b5ab04e1ee51f479"
+			"Rev": "b1d6d1fa894be9fd2b2d73521a21a487e84edd6e"
 		},
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/core/index",
-			"Rev": "88e69d20ff0070809be79699b5ab04e1ee51f479"
+			"Rev": "b1d6d1fa894be9fd2b2d73521a21a487e84edd6e"
 		},
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/core/search",
-			"Rev": "88e69d20ff0070809be79699b5ab04e1ee51f479"
+			"Rev": "b1d6d1fa894be9fd2b2d73521a21a487e84edd6e"
 		},
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/core/store",
-			"Rev": "88e69d20ff0070809be79699b5ab04e1ee51f479"
+			"Rev": "b1d6d1fa894be9fd2b2d73521a21a487e84edd6e"
 		},
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/core/util",
-			"Rev": "88e69d20ff0070809be79699b5ab04e1ee51f479"
+			"Rev": "b1d6d1fa894be9fd2b2d73521a21a487e84edd6e"
 		},
 		{
 			"ImportPath": "github.com/balzaczyy/golucene/queryparser/classic",
-			"Rev": "88e69d20ff0070809be79699b5ab04e1ee51f479"
+			"Rev": "b1d6d1fa894be9fd2b2d73521a21a487e84edd6e"
 		},
 		{
 			"ImportPath": "github.com/op/go-logging",
