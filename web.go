@@ -2,32 +2,86 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/balzaczyy/firebase"
+	"github.com/balzaczyy/go-logging"
 	std "github.com/balzaczyy/golucene/analysis/standard"
-	_ "github.com/balzaczyy/golucene/core/codec/lucene49"
+	_ "github.com/balzaczyy/golucene/core/codec/lucene410"
 	"github.com/balzaczyy/golucene/core/index"
 	"github.com/balzaczyy/golucene/core/search"
 	"github.com/balzaczyy/golucene/core/store"
 	"github.com/balzaczyy/golucene/core/util"
 	qp "github.com/balzaczyy/golucene/queryparser/classic"
-	"github.com/op/go-logging"
 	"net/http"
 	"os"
 	"path"
 	"strings"
 )
 
-var log = logging.MustGetLogger("hamlet")
-
-func init() {
-	format := logging.MustStringFormatter(
-		"%{color}%{time:15:04:05.000000} %{shortfunc} ▶ %{level:.4s} %{id:03x}%{color:reset} %{message}")
-	backend := logging.NewLogBackend(os.Stdout, "", 0)
-	logging.SetBackend(logging.NewBackendFormatter(backend, format))
-	log.Info("Logger is configured.")
+var SILENT = map[string]string{
+	"print": "silent",
 }
 
-func main() {
+type FirebaseLogger struct {
+	queue  chan []byte
+	closer chan chan error
+}
 
+func newLogger(root string) *FirebaseLogger {
+	api := new(firebase.Client)
+	api.Init(root, "", nil)
+	queue := make(chan []byte, 1000)
+	closer := make(chan chan error)
+	go func() {
+		isRunning := true
+		for isRunning {
+			select {
+			case reply := <-closer:
+				isRunning = false
+				reply <- nil
+			case b := <-queue:
+				_, err := api.Push(string(b), SILENT)
+				if err != nil {
+					fmt.Println(err)
+					fmt.Println(string(b))
+				}
+			}
+		}
+	}()
+	return &FirebaseLogger{
+		queue:  queue,
+		closer: closer,
+	}
+}
+
+func (logger *FirebaseLogger) Write(b []byte) (int, error) {
+	logger.queue <- b
+	return len(b), nil
+}
+
+func (logger *FirebaseLogger) Close() error {
+	ok := make(chan error)
+	logger.closer <- ok
+	return <-ok
+}
+
+var log = logging.MustGetLogger("hamlet")
+
+func main() {
+	// setup logger
+	logger := newLogger(
+		"https://shining-inferno-3740.firebaseio.com/log/hamlet",
+	)
+	defer logger.Close()
+
+	logging.SetBackend(logging.NewBackendFormatter(
+		logging.NewLogBackend(logger, "", 0),
+		logging.MustStringFormatter(
+			"%{color}%{time:15:04:05.000000} %{shortfunc} ▶ %{level:.4s} %{id:03x}%{color:reset} %{message}",
+		),
+	))
+
+	// setup index and searcher
 	util.SetDefaultInfoStream(util.NewPrintStreamInfoStream(os.Stdout))
 	index.DefaultSimilarity = func() index.Similarity {
 		return search.NewDefaultSimilarity()
@@ -48,6 +102,7 @@ func main() {
 	qParser := qp.NewQueryParser(util.VERSION_49, "text", analyzer)
 	ss := search.NewIndexSearcher(reader)
 
+	// setup web service
 	port := os.Getenv("VCAP_APP_PORT")
 	if port == "" {
 		port = "8081"
