@@ -1,0 +1,7 @@
+---
+imports:
+  - github.com/balzaczyy/firebase
+  - github.com/balzaczyy/go-logging
+  - github.com/balzaczyy/golucene
+
+main: web.go
